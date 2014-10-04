@@ -1,0 +1,54 @@
+﻿extends layout
+
+block title
+    .jumbotron
+        h1 #{title}
+        p Chat in real life, with everyone around you, in real time. 
+block content
+    
+    form(class='navbar-form navbar-left' role='search')
+        .form-group
+            input#usernameTextBox(type='text' class='form-control' placeholder='Username: ')
+            br
+            //input#roomTextBox(type='text' class='form-control' placeholder='Location: ')
+            button#joinButton(type='submit' value='submit' action='' class='btn btn-default' style='margin-left:10px') Log in
+
+    script(type='text/javascript').
+        
+        $('#joinButton').click(function(evt){
+            //browse to chat room template
+            if(navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(doSomething);
+            } else {
+                alert("Please enable GPS");
+            }
+           return false;
+        });
+
+        function doSomething(position) {
+            var lat = 37.870592699999996;
+            var long = -122.25172079999999;
+            
+            var distance = calculateDistance(lat, long, position.coords.latitude, position.coords.longitude);
+            if(distance < 5) {
+                window.location = 'rooms/' + 'Cal Hacks' + '?username=' + $('#usernameTextBox').val();
+            } else {
+                alert("No Event Nearby");
+            }
+            ready;
+        }
+
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            if(typeof (Number.prototype.toRad) === "undefined") {
+                Number.prototype.toRad = function () {
+                    return this * Math.PI / 180;
+                }
+            }
+            var R = 6371; // km
+            var dLat = (lat2 - lat1).toRad();
+            var dLon = (lon2 - lon1).toRad();
+            var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(lat1.toRad()) * Math.cos(lat2.toRad()) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            var d = R * c;
+            return d;
+        }
